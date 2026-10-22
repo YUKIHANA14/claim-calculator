@@ -113,8 +113,8 @@ function calculate() {
 
   const lastHeight = (last / max) * 160;
   const currentHeight = (current / max) * 160;
-
-  document.getElementById("bar-last").style.height =
+document.getElementById("bar-current").style.height =
+  currentHeight + "px";
     lastHeight + "px";
 
   document.getElementById("bar-current").style.height =
