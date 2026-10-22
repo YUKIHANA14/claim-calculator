@@ -51,36 +51,72 @@
     <br><br>
     <button onclick="calculate()">계산하기</button>
     <div id="result"></div>
+    
+<div id="chart" style="margin-top:25px; display:none;">
+  <h3>클레임 건수 비교</h3>
+  <div style="display:flex;align-items:end;justify-content:center;gap:40px;height:220px;">
+    <div style="text-align:center;">
+      <div id="bar-last" style="width:65px;background:#91b5ae;"></div>
+      <p>지난달</p>
+    </div>
+    <div style="text-align:center;">
+      <div id="bar-current" style="width:65px;background:#005b4f;"></div>
+      <p>이번 달</p>
+    </div>
+  </div>
+</div>
+
   </div>
 
   <script>
-    function calculate() {
-      const lastInput = document.getElementById("last").value;
-      const currentInput = document.getElementById("current").value;
-      const last = Number(lastInput);
-      const current = Number(currentInput);
-      const result = document.getElementById("result");
 
-      if (lastInput === "" || currentInput === "" ||
-          !Number.isInteger(last) || !Number.isInteger(current) ||
-          last < 0 || current < 0) {
-        result.innerText = "0 이상의 정수를 입력하세요.";
-        return;
-      }
+function calculate() {
+  const lastInput = document.getElementById("last").value;
+  const currentInput = document.getElementById("current").value;
 
-      const difference = current - last;
+  const last = Number(lastInput);
+  const current = Number(currentInput);
+  const result = document.getElementById("result");
+  const chart = document.getElementById("chart");
 
-      if (last === 0) {
-        result.innerText = `전월 대비 ${difference}건 변동 (증감률 계산 불가)`;
-        return;
-      }
+  // 입력값 확인
+  if (lastInput === "" || currentInput === "" ||
+      !Number.isInteger(last) || !Number.isInteger(current) ||
+      last < 0 || current < 0) {
+    result.innerText = "0 이상의 정수를 입력하세요.";
+    chart.style.display = "none";
+    return;
+  }
 
-      const percent = (difference / last * 100).toFixed(1);
-      const sign = difference > 0 ? "+" : "";
+  // 클레임 증감 계산
+  const difference = current - last;
+  const sign = difference > 0 ? "+" : "";
 
-      result.innerText =
-        `전월 대비 ${sign}${difference}건 (${sign}${percent}%)`;
-    }
+  if (last === 0) {
+    result.innerText =
+      `전월 대비 ${sign}${difference}건 (증감률 계산 불가)`;
+  } else {
+    const percent = (difference / last * 100).toFixed(1);
+
+    result.innerText =
+      `전월 대비 ${sign}${difference}건 (${sign}${percent}%)`;
+  }
+
+  // 막대그래프 표시
+  chart.style.display = "block";
+
+  const max = Math.max(last, current, 1);
+
+  const lastHeight = (last / max) * 160;
+  const currentHeight = (current / max) * 160;
+
+  document.getElementById("bar-last").style.height =
+    lastHeight + "px";
+
+  document.getElementById("bar-current").style.height =
+    currentHeight + "px";
+}
+
   </script>
 </body>
 </html>
